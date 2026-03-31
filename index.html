@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Hyper-SET: Designing Transformers via Hyperspherical Energy Minimization - ICLR 2026">
+  <meta name="keywords" content="Transformer, Energy-Based Learning, Hyperspherical, Interpretability, ICLR">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hyper-SET: Hyperspherical Energy Transformer</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/profile.jpeg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+  
+  <!-- MathJax for rendering equations -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body id="top">
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <!-- <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+        <a class="navbar-item" href="#top" aria-label="Back to top">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+    </div>
+  </div> -->
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Hyper-SET: Designing Transformers via Hyperspherical Energy Minimization</h1>
+          <!-- <h2 class="subtitle is-4">Designing Transformers via Hyperspherical Energy Minimization</h2> -->
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <span>Yunzhe Hu</span><sup>1</sup>,</span>
+            <span class="author-block">
+              <span>Difan Zou</span><sup>1,2</sup>,</span>
+            <span class="author-block">
+              <span>Dong Xu</span><sup>1</sup>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>The University of Hong Kong,</span>
+            <span class="author-block"><sup>2</sup>Shenzhen Loop Area Institute</span>
+          </div>
+          
+          <!-- <div class="publication-venue">
+            ICLR 2026
+          </div> -->
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://openreview.net/pdf?id=FinhjyDgYA"
+                   class="external-link button is-normal is-rounded is-dark" target="_blank" rel="noopener noreferrer">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <!-- arXiv Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2502.11646"
+                   class="external-link button is-normal is-rounded is-dark" target="_blank" rel="noopener noreferrer">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/huyunzhe/hyper-set"
+                   class="external-link button is-normal is-rounded is-dark" target="_blank" rel="noopener noreferrer">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Overview</h2>
+        
+        <div class="content has-text-justified">
+          <p class="research-question">
+            <strong>Central Question:</strong> Can we find or design a function prior that induces a model interpretable by construction?
+          </p>
+          
+          <p>
+            <strong>Our Answer:</strong> Hyper-SET demonstrates that for a meaningful family of Transformers, the architecture can be <em>derived</em> from a principled objective rather than assembled from heuristics. We start from <strong>maximum likelihood on the hypersphere</strong>, formalize it as dual objectives of <strong>semantic alignment</strong> and <strong>distributional uniformity</strong>, instantiate these as Hopfield-style energy functions, and derive the resulting architecture through iterative energy minimization.
+          </p>
+
+          <p>
+            <strong>What is new:</strong>
+          </p>
+          <ul>
+            <li><strong>Theoretical formulation:</strong> We conceptualize Transformer layer dynamics through maximum likelihood estimation on the hypersphere, balancing alignment (mode seeking) and uniformity (mass covering).</li>
+            <li><strong>Energy-driven architecture:</strong> Core components—symmetric attention, feedforward, RMSNorm, and skip connections—emerge naturally from iterative energy minimization, not from engineering intuition.</li>
+            <li><strong>Empirical validation:</strong> We verify that the framework leaves observable traces: energy decreases, token geometry becomes more uniform, and the model remains competitive across reasoning, classification, and masked modeling tasks.</li>
+          </ul>
+
+          <p>
+            <strong>Why this matters:</strong> Hyper-SET offers a methodological contribution beyond a single architecture. It provides a reusable design language for principled Transformer variants, making architecture choices more interpretable, justifiable, and extensible.
+          </p>
+
+          <p>
+            <strong>What follows:</strong> Because the framework is defined at the level of objective and energy, future work can systematically extend it to alternative attention kernels (e.g., linear attention), gated feedforward structures, and scalable recurrent adaptations—all while preserving the same conceptual backbone.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <figure class="image">
+            <img src="./static/figures/figure1_iclr2026_Page1.png" alt="Overview of Hyper-SET" style="max-width: 900px; margin: 0 auto;">
+          </figure>
+          <h2 class="subtitle has-text-centered" style="margin-top: 1rem;">
+            <strong>Hyperspherical Energy Transformer</strong>: Core components emerge from iterative energy minimization on the hypersphere.
+          </h2>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Transformer-based models have achieved remarkable success, but their core components are largely heuristics-driven and engineered from the bottom up, calling for a prototypical model with high interpretability and practical competence.
+          </p>
+          <p>
+            To this end, we conceptualize a principled, top-down approach grounded in energy-based interpretation. Specifically, we formalize token dynamics as a joint maximum likelihood estimation on the hypersphere, featuring two properties: <strong>semantic alignment</strong> in the high-dimensional space and <strong>distributional uniformity</strong> in the low-dimensional space. By quantifying them with extended Hopfield energy functions, we instantiate this idea as a constrained energy minimization problem, which enables designs of symmetric attention and feedforward modules with RMS normalization.
+          </p>
+          <p>
+            We present <strong>Hyper-Spherical Energy Transformer (Hyper-SET)</strong>, a recurrent-depth alternative to vanilla Transformers naturally emerging from iterative energy optimization on the hypersphere. With shared parameters across layers, Hyper-SET can scale to arbitrary depth with fewer parameters. Theoretically grounded and compact, it achieves competitive or superior performance across diverse tasks, including Sudoku solving, image classification, and masked image modeling.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+  </div>
+</section>
+
+
+<section class="section section-overview">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Overview: What, Why, and What Next</h2>
+        
+        <div class="content has-text-justified">
+          <p class="research-question">
+            <strong>Central Question:</strong> Can we find or design a function prior that induces a model interpretable by construction?
+          </p>
+          
+          <p>
+            <strong>Our Thesis:</strong> Hyper-SET demonstrates that core Transformer components can be <em>derived</em> from a principled objective rather than assembled from heuristics. We start from <strong>maximum likelihood on the hypersphere</strong>, formalize it as dual objectives of <strong>semantic alignment</strong> and <strong>distributional uniformity</strong>, instantiate these as Hopfield-style energy functions, and derive the architecture through iterative energy minimization.
+          </p>
+
+          <p><strong>What is new:</strong></p>
+          <ul>
+            <li><strong>Theoretical formulation:</strong> Transformer layer dynamics emerge from maximum likelihood estimation on the hypersphere, balancing alignment (mode seeking) and uniformity (mass covering).</li>
+            <li><strong>Energy-driven architecture:</strong> Symmetric attention, feedforward, RMSNorm, and skip connections arise naturally from energy minimization, not from engineering intuition.</li>
+            <li><strong>Empirical validation:</strong> The framework leaves observable traces—energy decreases, token geometry becomes more uniform—while remaining competitive on practical tasks.</li>
+          </ul>
+
+          <p><strong>Why this matters:</strong></p>
+          <ul>
+            <li>It provides a <strong>coherent scientific story</strong> for why familiar Transformer components work together.</li>
+            <li>It turns architecture design into a <strong>reusable framework</strong> rather than a collection of isolated tricks.</li>
+            <li>It suggests a path toward models that are easier to analyze, adapt, and extend—especially in parameter-constrained settings.</li>
+          </ul>
+
+          <p><strong>What follows:</strong></p>
+          <ul>
+            <li>The framework naturally extends to alternative attention operators (e.g., linear attention), gated feedforward structures, and scalable recurrent adaptations.</li>
+            <li>Future work can systematically vary the energy functions to induce new architectures while preserving the same conceptual backbone.</li>
+            <li>Hyper-SET is less a frozen architecture and more a <strong>research program for principled Transformer design</strong>.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">How the Framework Works: Theory and Mechanism</h2>
+        
+        <div class="content has-text-justified">
+          <h3 class="title is-4">Step 1: Motivation via Maximum Likelihood on the Hypersphere</h3>
+          <p>
+            The key question is not which layer to add, but what <em>geometric behavior</em> good token representations should exhibit. We conjecture that effective representations should exhibit two complementary properties: <strong>semantic alignment</strong> in a high-dimensional space and <strong>distributional uniformity</strong> in a low-dimensional subspace. This dual perspective reflects the balance of <em>mode seeking</em> and <em>mass covering</em>.
+          </p>
+          <p>
+            We formalize this under maximum likelihood estimation:
+          </p>
+          <div class="equation-container wide">
+            $$\min_{\mathbf{x}} ~\sum_{h=1}^H \underbrace{\mathrm{KL} \left( p(\mathbf{z}) \Vert p_\phi(\mathbf{z}^h \mid \mathbf{x}) \right)}_{\text{uniformity}} \underbrace{- \log p_\theta(\mathbf{x})}_{\text{alignment}}$$
+          </div>
+        </div>
+        
+        <div class="content has-text-justified" style="margin-top: 2rem;">
+          <h3 class="title is-4">Step 2: Instantiation via Dual Energy Functions</h3>
+          <p>
+            To turn these two desiderata into something optimizable, we quantify them with two complementary Hopfield-style energies:
+          </p>
+          <div class="equation-container wide">
+            $$\begin{aligned}
+            \min_{\mathbf{x}_1, \dots,\mathbf{x}_N \in \mathbf{X}} ~ &E(\mathbf{X}; \mathbf{W}, \mathbf{D}) = E_{\text{ATTN}} + E_{\text{FF}}, \\
+            	\text{subject to} \quad &\|\mathbf{W}_h^\top\mathbf{x}_i\|_2 = \sqrt{p}, \quad \|\mathbf{D}^\top\mathbf{x}_i\|_2 = \sqrt{M}, \quad i = 1,\dots,N.
+            \end{aligned}$$
+          </div>
+          <p>where the attention energy promotes distributional uniformity:</p>
+          <div class="equation-container wide">
+            $$
+            E_{\text{ATTN}}^h = \beta^{-1}\sum_{i=1}^N\log\left(\sum_{j=1}^N \exp\left(\beta(\mathbf{z}_i^h)^\top(\mathbf{z}_j^h)\right)\right), \quad \text{subject to } \|\mathbf{W}_h^\top\mathbf{x}_i\|_2 = \sqrt{p}.
+            $$
+            $$
+            E_{\text{ATTN}} = \sum_{h=1}^H E_{\text{ATTN}}^h
+            $$
+          </div>
+          <p>and the feedforward energy promotes semantic alignment:</p>
+          <div class="equation-container wide">
+            $$E_{\text{FF}} = -\frac{1}{2}\sum_{i=1}^N\sum_{m=1}^M\left(\operatorname{ReLU}\left(\mathbf{d}_m^\top\mathbf{x}_i\right)\right)^2, \quad \text{subject to } \|\mathbf{D}^\top\mathbf{x}_i\|_2 = \sqrt{M}.$$
+          </div>
+          <p style="margin-top: 1rem; color: #486581;">
+            <em>Attention and feedforward are not two unrelated modules. They are two optimization forces that play different but complementary geometric roles.</em>
+          </p>
+        </div>
+        
+        <div class="content has-text-justified" style="margin-top: 2rem;">
+          <h3 class="title is-4">Step 3: Derivation of Architecture</h3>
+          <p>
+            By discretizing the gradient flow of this dual energy under spherical constraints, we recover the main architectural ingredients of Hyper-SET. The paper does not only reinterpret a Transformer after the fact—it shows how core components can be <strong>constructed from first principles</strong>, with mathematical roles attached to them.
+          </p>
+          
+          <figure class="image" style="margin: 2rem 0;">
+            <img src="./static/figures/overviewofHyperSET_v1_Page1.png" alt="Overview of Hyper-SET Architecture" style="max-width: 800px; margin: 0 auto;">
+          </figure>
+          
+          <h5 class="title is-6">Attention Module (from Uniform Energy)</h5>
+          <div class="equation-container wide">
+            $$\mathbf{X}_{t+1} =\mathbf{X}_{t} - \alpha_t \sum_{h=1}^H \Bigg( \mathbf{W}_h\mathbf{Z}_{\mathrm{RMS},t}^h \, \underbrace{\operatorname{softmax}}_{\mathrm{column\text{-}wise}} \left([\mathbf{Q}\mathbf{K}]_{\mathrm{RMS},t}\right) + \mathbf{W}_h\mathbf{Z}_{\mathrm{RMS},t}^h \, \underbrace{\operatorname{softmax}}_{\mathrm{row\text{-}wise}} \left([\mathbf{Q}\mathbf{K}]_{\mathrm{RMS},t}\right) \Bigg).$$
+          </div>
+          
+          <h5 class="title is-6">Feedforward Module (from Alignment Energy)</h5>
+          <div class="equation-container wide">
+            $$\mathbf{X}_{t+1} = \mathbf{X}_t + \gamma_t \mathbf{D}\operatorname{ReLU}\left(\operatorname{RMSNorm}\left(\mathbf{D}^\top\mathbf{X}_t \right)\right)$$
+          </div>
+          
+          <h5 class="title is-6">Adaptive Step Sizes</h5>
+          <div class="equation-container wide">
+            $$\alpha_t = \boldsymbol{\alpha}_\eta (t, \mathbf{x}(0)), \quad \gamma_t = \boldsymbol{\gamma}_\psi (t, \mathbf{x}(0))$$
+          </div>
+          <p>
+            These adaptive step sizes allow the recurrent dynamics to remain faithful to the optimization viewpoint, while also explaining why the model can extrapolate in computation more gracefully than a standard Transformer.
+          </p>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">How the Framework Is Validated: Theory Meets Evidence</h2>
+        
+        <div class="content has-text-justified">
+          <p>
+            The empirical goal is not only to show that Hyper-SET performs well. More importantly, it is to show that the proposed principle leaves <strong>observable traces in the learned dynamics</strong>: the energy decreases, the token geometry becomes more uniform in subspaces, and these behaviors coincide with competitive downstream performance.
+          </p>
+          
+          <p>
+            If the framework is meaningful, then training should not only improve task metrics; it should also reveal the geometric dynamics predicted by the theory. We therefore examine three families of evidence:
+          </p>
+          <ul>
+            <li><strong>Energy trajectories</strong> test whether the induced dynamics behave like the minimization procedure they are meant to approximate.</li>
+            <li><strong>Effective rank</strong> tests whether projected tokens spread across subspaces rather than collapsing.</li>
+            <li><strong>Average angle</strong> tests whether those tokens become more uniformly separated, approaching a near-orthogonal arrangement on the hypersphere.</li>
+          </ul>
+        </div>
+
+        <div class="content has-text-justified" style="margin-top: 2rem;">
+          <h3 class="title is-4">Energy Trajectory</h3>
+          <p>
+            Both attention and feedforward energies decrease during optimization, supporting the interpretation that the layer dynamics align with the proposed objective. Without hard constraints on the sign of step sizes, the energy decreases within training iterations and extrapolates smoothly beyond them, confirming the generalization of learned adaptive step sizes.
+          </p>
+          <figure class="image" style="margin: 1.5rem 0;">
+            <img src="./static/figures/energy_sudoku_with_acc_Page1.png" alt="Energy trajectories on Sudoku" style="max-width: 800px; margin: 0 auto; width: 100%;">
+          </figure>
+          <figure class="image" style="margin: 1.5rem 0;">
+            <img src="./static/figures/energy_with_acc_Page1.png" alt="Energy trajectories on CIFAR-10" style="max-width: 800px; margin: 0 auto; width: 100%;">
+          </figure>
+          <p class="has-text-centered is-size-8 figure-caption">Energy evolution on Sudoku (top) and CIFAR-10 (bottom) validation sets.</p>
+        </div>
+
+        <div class="content has-text-justified" style="margin-top: 2rem;">
+          <h3 class="title is-4">Effective Rank and Average Angle</h3>
+          <p>
+            To validate our motivation to mitigate token synchronization in subspaces, we measure two metrics: <em>effective rank</em> and <em>average angle</em>. The effective rank is a continuous approximation of the full rank and, similar to the average angle, reflects the extent to which a set of vectors distributes uniformly.
+          </p>
+          <p>
+            As forward optimization progresses, the effective rank within each subspace steadily rises while the full rank remains unchanged. This dynamic mirrors that of the average angle, which increases from around 70° to near orthogonal. This implies that tokens in the subspaces occupy maximal hyperspherical volume, and the information encoded in the low dimension gradually saturates.
+          </p>
+          
+          <div class="columns is-mobile is-variable is-2 is-centered" style="margin: 1.5rem 0;">
+            <div class="column is-half">
+              <figure class="image">
+                <img src="./static/figures/rank_angle_sudoku_Page1.png" alt="Rank and angle on Sudoku" style="width: 125%; max-width: none; height: auto; margin-left: -12.5%;">
+              </figure>
+              <p class="has-text-centered is-size-8 figure-caption">Geometric analysis on Sudoku test set.</p>
+            </div>
+            <div class="column is-half">
+              <figure class="image">
+                <img src="./static/figures/rank_angle-v2_Page1.png" alt="Rank and angle on CIFAR-10" style="width: 125%; max-width: none; height: auto; margin-left: -12.5%;">
+              </figure>
+              <p class="has-text-centered is-size-8 figure-caption">Geometric analysis on CIFAR-10 validation set.</p>
+            </div>
+          </div>
+
+          <p>
+            Together, these analyses test the framework at the level of <em>mechanism</em>, not only at the level of end metrics. They show that the model behaves in the way the theory says it should behave.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section section-experiments">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Experimental Results (For Readers Who Care About Performance)</h2>
+        
+        <div class="content has-text-justified">
+          <p>
+            The experiments serve as supplementary evidence that the framework is not merely elegant, but also practically useful. We present results on three diverse tasks: Sudoku solving (reasoning), image classification (discriminative learning), and masked image modeling (generative learning). The central message is that a <strong>more interpretable, more principled, and often more compact</strong> Transformer can still be highly competitive.
+          </p>
+        </div>
+        
+        <div class="content has-text-justified" style="margin-top: 2rem;">
+          <h3 class="title is-4">Sudoku Solving</h3>
+          <p>
+            Sudoku provides a clean stress test for iterative computation. Hyper-SET outperforms vanilla Transformer (54.70% vs 49.30%) and exhibits superior test-time extrapolation when increasing iterations beyond training, demonstrating the effectiveness of learned adaptive step sizes.
+          </p>
+          
+          <div class="columns is-mobile is-variable is-2 is-centered" style="margin: 1.5rem 0;">
+            <div class="column is-half">
+              <figure class="image">
+                <img src="./static/figures/sudoku_training_dynamics_Page1.png" alt="Sudoku Training Dynamics" style="width: 125%; max-width: none; height: auto; margin-left: -12.5%;">
+              </figure>
+              <p class="has-text-centered is-size-8 figure-caption">Training dynamics on Sudoku.</p>
+            </div>
+            <div class="column is-half">
+              <figure class="image">
+                <img src="./static/figures/sudoku_extropolation_Page1.png" alt="Sudoku Test-time Extrapolation" style="width: 125%; max-width: none; height: auto; margin-left: -12.5%;">
+              </figure>
+              <p class="has-text-centered is-size-8 figure-caption">Test-time extrapolation on Sudoku.</p>
+            </div>
+          </div>
+
+          <div class="table-scroll">
+            <table class="table is-fullwidth is-striped is-hoverable results-table">
+              <thead>
+                <tr>
+                  <th>Sudoku Setting</th>
+                  <th>Transformer</th>
+                  <th>Hyper-SET</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>In-distribution board accuracy</td>
+                  <td>49.30%</td>
+                  <td><strong>54.70%</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <div class="content has-text-justified" style="margin-top: 2rem;">
+          <h3 class="title is-4">Image Classification</h3>
+          <p>
+            On CIFAR-10, CIFAR-100, and ImageNet-100, Hyper-SET achieves competitive or superior accuracy compared to Transformer while using significantly fewer parameters. The framework that is geometrically and theoretically motivated also remains practically useful under standard benchmarks.
+          </p>
+          
+          <figure class="image" style="margin: 1.5rem 0;">
+            <img src="./static/figures/bar_plot_with_upper_bound_Page1.png" alt="Layer-iteration trade-off on CIFAR-100" style="max-width: 700px; margin: 0 auto;">
+          </figure>
+          <p class="has-text-centered is-size-7 figure-caption">Top-1 accuracy and model parameters on CIFAR-100 with different layer-iteration trade-offs. Hyper-SET consistently surpasses Transformer with parameter efficiency.</p>
+
+          <div class="table-scroll">
+            <table class="table is-fullwidth is-striped is-hoverable results-table">
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th>Width</th>
+                  <th>#Params (M)</th>
+                  <th>CIFAR-10</th>
+                  <th>CIFAR-100</th>
+                  <th>IN-100</th>
+                  <th>IN-1K</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Transformer</td><td>384</td><td>2.38</td><td>89.90</td><td>61.89</td><td>69.44</td><td><strong>66.94</strong></td></tr>
+                <tr><td>CRATE-T</td><td>896</td><td>3.04</td><td>87.54</td><td>60.23</td><td>68.16</td><td>57.89</td></tr>
+                <tr><td>CRATE</td><td>768</td><td>3.00</td><td>84.81</td><td>58.22</td><td>68.52</td><td>57.00</td></tr>
+                <tr><td>Energy Transformer</td><td>512</td><td>2.39</td><td>76.39</td><td>50.60</td><td>36.68</td><td>34.24</td></tr>
+                <tr><td>Hyper-SET (Ours)</td><td>512</td><td>2.39</td><td><strong>90.11</strong></td><td>63.41</td><td><strong>70.16</strong></td><td>62.76</td></tr>
+                <tr><td>Hyper-SET (Ours)</td><td>640</td><td>3.40</td><td>89.96</td><td><strong>64.60</strong></td><td>69.31</td><td>66.21</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="table-note">Top-1 accuracy (%) for single-layer recurrent-depth models. Parameters are measured on ImageNet-1K. All models are trained from scratch on the listed datasets.</p>
+
+          <div class="table-scroll" style="margin-top: 1rem;">
+            <table class="table is-fullwidth is-striped is-hoverable results-table">
+              <thead>
+                <tr>
+                  <th>12-layer Non-recurrent Model</th>
+                  <th>Width</th>
+                  <th>#Params (M)</th>
+                  <th>CIFAR-10</th>
+                  <th>CIFAR-100</th>
+                  <th>CIFAR-10†</th>
+                  <th>CIFAR-100†</th>
+                  <th>IN-1K</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Transformer</td><td>384</td><td>21.86</td><td>87.44</td><td>62.84</td><td><strong>96.95</strong></td><td><strong>83.10</strong></td><td><strong>67.90</strong></td></tr>
+                <tr><td>CRATE</td><td>512</td><td>10.28</td><td>88.76</td><td>63.94</td><td>94.18</td><td>77.39</td><td>60.69</td></tr>
+                <tr><td>Hyper-SET (Ours)</td><td>512</td><td>8.17</td><td><strong>88.82</strong></td><td><strong>64.98</strong></td><td>95.76</td><td>80.89</td><td>66.26</td></tr>
+                <tr><td>Hyper-SET (Ours)</td><td>768</td><td>17.56</td><td>88.53</td><td>64.16</td><td>96.47</td><td>82.60</td><td>67.20</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="table-note">Top-1 accuracy (%) for 12-layer non-recurrent-depth models. Parameters are measured on ImageNet-1K. † means first pretraining on ImageNet-1K and then fine-tuning on CIFAR-10/100.</p>
+        </div>
+        
+        <div class="content has-text-justified" style="margin-top: 2rem;">
+          <h3 class="title is-4">Masked Image Modeling</h3>
+          <p>
+            Masked image modeling offers a generative-style setting where representation quality matters in a different way. Hyper-SET performs competitively here as well, further indicating that the framework is broad enough to support both discriminative and generative learning scenarios.
+          </p>
+          <figure class="image" style="margin: 1.5rem 0;">
+            <img src="./static/figures/visualization_more_results_v3_Page1.png" alt="Masked Image Modeling Results" style="max-width: 800px; margin: 0 auto;">
+          </figure>
+          <p class="has-text-centered is-size-7 figure-caption">Visualization of masked image modeling results on ImageNet-100.</p>
+
+          <div class="table-scroll">
+            <table class="table is-fullwidth is-striped is-hoverable results-table">
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th>Iters</th>
+                  <th>FF Ratio</th>
+                  <th>#Params (M)</th>
+                  <th>PSNR ↑</th>
+                  <th>SSIM ↑</th>
+                  <th>MS-SSIM ↑</th>
+                  <th>LPIPS ↓</th>
+                  <th>FID ↓</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Transformer</td><td>12</td><td>4d</td><td>8.85</td><td>15.953</td><td><strong>0.417</strong></td><td><strong>0.599</strong></td><td><strong>0.327</strong></td><td><strong>43.428</strong></td></tr>
+                <tr><td>Hyper-SET (Ours)</td><td>12</td><td>1d</td><td>3.94</td><td>15.713</td><td>0.411</td><td>0.576</td><td>0.358</td><td>59.841</td></tr>
+                <tr><td>Hyper-SET (Ours)</td><td>24</td><td>8d</td><td>8.07</td><td><strong>15.955</strong></td><td><strong>0.417</strong></td><td>0.596</td><td>0.332</td><td>45.174</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="table-note">Comparisons of masked image modeling performance on ImageNet-100 (5k). All models use a single layer. ↑ indicates higher is better, and ↓ indicates lower is better.</p>
+        </div>
+
+        <div class="content has-text-justified" style="margin-top: 2.5rem;">
+          <h3 class="title is-4">Interpretation</h3>
+          <p>
+            These results should be read as follows:
+          </p>
+          <ul>
+            <li><strong>Mechanism first:</strong> The framework is validated first through energy and geometry, and only then through benchmark performance.</li>
+            <li><strong>Benchmarks as corroboration:</strong> The three application domains serve as supplementary evidence that the framework is not merely elegant, but also useful.</li>
+            <li><strong>Not just another variant:</strong> The central contribution is a principled way to view and design Transformers, not simply a new point on a leaderboard.</li>
+            <li><strong>Open-ended impact:</strong> Because the framework is objective-driven, it naturally invites future work on new energies, operators, and scalable recurrent schemes.</li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">What can be done under the hood: Generality and Extensions</h2>
+
+        <div class="content has-text-justified">
+          <p>
+            The broader promise of Hyper-SET is that it opens a path for follow-up work. Because the framework is defined in terms of objective and energy, future research can extend it systematically rather than heuristically. By generalizing the energy functions, we can induce alternative attention operators and feedforward structures:
+          </p>
+          <div class="equation-container wide">
+            $$E_{\text{ATTN}} = \sum_{h=1}^{H}\sum_{i=1}^{N} f\left(\sum_{j=1}^{N} K(\mathbf{W}_h^\top\mathbf{x}_i, \mathbf{W}_h^\top\mathbf{x}_j)\right),\quad
+            E_{\text{FF}} = -\sum_{i=1}^{N} g\left(\sum_{m=1}^{M} h(\mathbf{d}_m^\top\mathbf{x}_i)\right)$$
+          </div>
+        </div>
+
+        <div class="table-scroll">
+          <table class="table is-fullwidth is-striped is-hoverable results-table">
+            <thead>
+              <tr>
+                <th>Operator</th>
+                <th>\(f(x)\)</th>
+                <th>\(K(\mathbf{x},\mathbf{y})\)</th>
+                <th>\(E_{\text{ATTN}}\)</th>
+                <th>\(-\nabla_{\mathbf{X}} E_{\text{ATTN}}\)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Bi-Softmax (Default)</td>
+                <td>\(\beta^{-1}\log(x)\)</td>
+                <td>\(\exp(\beta\,\mathbf{x}^\top\mathbf{y})\)</td>
+                <td>Default form in Eq. \(E_{\text{ATTN}}^h\)</td>
+                <td>Default form in attention update</td>
+              </tr>
+              <tr>
+                <td>Sigmoid Attention</td>
+                <td>\(\frac{\beta^{-1}}{2}x\)</td>
+                <td>\(\sigma(\beta\,\mathbf{x}^\top\mathbf{y})\)</td>
+                <td>\(\frac{1}{2}\!\sum_h\sum_{i,j}\sigma\!\left(\beta(\mathbf{W}_h^\top\mathbf{x}_i)^\top\mathbf{W}_h^\top\mathbf{x}_j\right)\beta^{-1}\)</td>
+                <td>\(\sum_h \mathbf{W}_h\mathbf{W}_h^\top\mathbf{X}\,\sigma(1-\sigma)\!\left(\beta(\mathbf{W}_h^\top\mathbf{X})^\top\mathbf{W}_h^\top\mathbf{X}\right)\)</td>
+              </tr>
+              <tr>
+                <td>Linear Attention</td>
+                <td>\(\frac{\beta^{-1}}{2}x\)</td>
+                <td>\(\frac{1}{2}(\beta\,\Phi(\mathbf{x})^\top\Phi(\mathbf{y}))^2\)</td>
+                <td>\(\frac{1}{4}\!\sum_h\sum_{i,j}(\beta\,\Phi(\mathbf{W}_h^\top\mathbf{x}_i)^\top\Phi(\mathbf{W}_h^\top\mathbf{x}_j))^2\beta^{-1}\)</td>
+                <td>\(\sum_h \mathbf{W}_h\Phi'(\mathbf{W}_h^\top\mathbf{X})\odot(\beta\,\Phi(\mathbf{W}_h^\top\mathbf{X})\Phi(\mathbf{W}_h^\top\mathbf{X})^\top\Phi(\mathbf{W}_h^\top\mathbf{X}))\)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note">Alternative designs on attention energy \(E_{\text{ATTN}}\) and induced operators (from source Appendix G). \(\sigma\) denotes sigmoid and \(\Phi\) is an element-wise transform.</p>
+
+        <div class="table-scroll" style="margin-top: 1rem;">
+          <table class="table is-fullwidth is-striped is-hoverable results-table">
+            <thead>
+              <tr>
+                <th>Operator</th>
+                <th>\(g(x)\)</th>
+                <th>\(h(x)\)</th>
+                <th>\(E_{\text{FF}}\)</th>
+                <th>\(-\nabla_{\mathbf{X}} E_{\text{FF}}\)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>ReLU FF (Default)</td>
+                <td>\(x\)</td>
+                <td>\(\frac{1}{2}\operatorname{ReLU}^2(x)\)</td>
+                <td>Default form in Eq. \(E_{\text{FF}}\)</td>
+                <td>Default form in feedforward update</td>
+              </tr>
+              <tr>
+                <td>Softmax FF</td>
+                <td>\(\log(x)\)</td>
+                <td>\(\exp(x)\)</td>
+                <td>\(-\sum_i\log\left(\sum_m\exp(\mathbf{d}_m^\top\mathbf{x}_i)\right)\)</td>
+                <td>\(\mathbf{D}\,\underbrace{\operatorname{softmax}}_{\text{column-wise}}(\mathbf{D}^\top\mathbf{X})\)</td>
+              </tr>
+              <tr>
+                <td>Gated FF</td>
+                <td>\(\frac{1}{2}x^2\)</td>
+                <td>\(\Phi(x)\)</td>
+                <td>\(-\frac{1}{2}\sum_i\left(\sum_m\Phi(\mathbf{d}_m^\top\mathbf{x}_i)\right)^2\)</td>
+                <td>\(\mathbf{D}\,\underbrace{\Phi(\mathbf{D}^\top\mathbf{X})}_{\text{column sum}}\odot\Phi'(\mathbf{D}^\top\mathbf{X})\)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note">Alternative designs on feedforward energy \(E_{\text{FF}}\) and induced operators (from source Appendix G).</p>
+
+        <div class="content has-text-justified" style="margin-top: 1.5rem;">
+          <h3 class="title is-4">Scalability with Depth-wise LoRA</h3>
+          <p>
+            We evaluate depth-wise LoRA by varying the adapter rank \(r\) and reporting ImageNet-100 accuracy. The results show that depth-wise adaptation improves performance while adding only modest parameter overhead.
+          </p>
+        </div>
+
+        <div class="table-scroll">
+          <table class="table is-fullwidth is-striped is-hoverable results-table">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th># Params (M)</th>
+                <th>Accuracy</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Hyper-SET (Ours)</td><td>1.93</td><td>70.16</td></tr>
+              <tr><td>+ depth-wise LoRA (\(r=4\))</td><td>2.03</td><td>70.36</td></tr>
+              <tr><td>+ depth-wise LoRA (\(r=8\))</td><td>2.13</td><td>70.40</td></tr>
+              <tr><td>+ depth-wise LoRA (\(r=16\))</td><td>2.33</td><td>70.56</td></tr>
+              <tr><td>+ depth-wise LoRA (\(r=32\))</td><td>2.72</td><td><strong>72.20</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note">ImageNet-100 accuracy (%) of Hyper-SET under different LoRA ranks \(r\). Depth-wise LoRA introduces representation flexibility at each iteration.</p>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">BibTeX</h2>
+        <div class="content">
+          <pre class="bibtex" style="text-align: left;">
+@inproceedings{
+    hu2026hyperset,
+    title={Hyper-{SET}: Designing Transformers via Hyperspherical Energy Minimization},
+    author={Yunzhe Hu and Difan Zou and Dong Xu},
+    booktitle={The Fourteenth International Conference on Learning Representations},
+    year={2026},
+    url={https://openreview.net/forum?id=FinhjyDgYA}
+}
+          </pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is based on the <a href="https://github.com/nerfies/nerfies.github.io">Nerfies project page template</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
