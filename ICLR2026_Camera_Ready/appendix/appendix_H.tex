@@ -1,0 +1,111 @@
+\subsection{Connections and Differences with Energy Transformer}
+% Both our work and Energy Transformer (\textsc{ET}) \citep{hoover2024energy} adopt the idea of the correspondence between energy optimization and attention or feedforward layer. However, our work differs from it at least in the following aspects:
+% \begin{itemize}[leftmargin=*]
+%     \item We formulate the energy objective in a more rigorous way as a constrained optimization on the hypersphere. In \textsc{ET}, they establish dynamics on tokens using energy defined on their normalization rather than tokens themselves (cf. Eq.(1)(6) in \citep{hoover2024energy}), which is less rigorous. In contrast, we formally define energy functions on tokens in~\Eqref{eq:5}.
+%     \item Based on this formulation, we derive the $\operatorname{RMSNorm}$ operator after the projection in~\Eqref{eq:1} with an explicit meaning of constraint on the low-dimensional hypersphere instead of following the common pre-norm setting as in \textsc{ET}.
+%     \item We motivate our attention energy function from overcoming token synchronization. Hopfield energy is only a means to realize this, and we choose it as we intend to bring the connections to attention module. The attention energy in~\Eqref{eq:2} contrasts with the one in \textsc{ET} which has a negative sign before it. With alternative energy functions, our formulation can go beyond the traditional softmax attention, as shown in Table~\ref{tab:generalized attention} and Table~\ref{tab:generalized feedforward}.
+%     \item We use the alternating minimization technique which results in sequential stacking of the attention and feedforward module instead of parallelizing them as in \textsc{ET}.
+%     \item We learn adaptive step sizes instead of fixed ones as in \textsc{ET}.
+% \end{itemize}
+
+% In addition, \textsc{ET} did not show comparable performance to Transformer on image classification tasks and inference tasks like Sudoku, which could be more intriguing for the community. More importantly, it did not explicitly verify if their framework achieves the design purpose, i.e., whether its energy indeed decreases. In contrast, we confirm our framework in Figure~\ref{fig:energy} and Figure~\ref{fig:rank angle}.
+Both our \textsc{Hyper-SET} and \textsc{ET}~\citep{hoover2024energy} are grounded in the idea of interpreting Transformer components as gradient flows that minimize an energy function. However, the two approaches diverge significantly in motivations, theoretical formulation, and architectural design.
+
+% \paragraph{Motivational Differences}
+% Our work explicitly targets the token synchronization problem by combining uniformity and alignment objectives (Section~\ref{section:energy functions}). The Hopfield-style attention energy in \textsc{Hyper-SET} serves as a specific instantiation of a more general principle: minimizing hyperspherical interaction to prevent token collapse.
+
+% In contrast, \textsc{ET} primarily uses energy dynamics as an alternative lens for interpreting softmax attention, but does not directly connect the energy formulation to any particular representational challenge, such as token collapse or generalization. Moreover, \textsc{ET} adopts Hopfield energy more as a starting point than as a motivation-driven design.
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Motivation}
+        \begin{itemize}[leftmargin=*]
+            \item \textbf{\textsc{Hyper-SET}}: centers on a dual objective of semantic alignment (mode seeking) and uniformity (mass covering) under hyperspherical constraints grounded in maximal likelihood estimation. The proposed Hopfield-style energy aims to quantify it into an optimizable objective and serves as a specific instantiation of this more general principle, which fundamentally differs from \textsc{ET}.
+            \item \textbf{\textsc{ET}}: maintains the mechanistic interpretation of associative memory and does not directly connect the energy formulation to any particular representational challenge. Moreover, \textsc{ET} adopts Hopfield energy more as a starting point than as a motivation-driven design.
+        \end{itemize}
+    \item \textbf{Methodology}
+        \begin{itemize}[leftmargin=*]
+            \item \textbf{\textsc{Hyper-SET}}: provides a more rigorous formulation of energy minimization. Our energy functions are defined \emph{directly} on tokens~\Eqref{eq:5} under a hyperspherical constraint. This formulation enables us to derive $\operatorname{RMSNorm}$ as a natural outcome of energy minimization in low-dimensional subspaces~\Eqref{eq:7}.
+
+            \item \textbf{\textsc{ET}}: defines energy over pre-normalized tokens (see Eq.(1)(6) in~\citet{hoover2024energy}) rather than tokens per se, bypassing the constrained optimization step. As a result, the role of normalization in \textsc{ET} is more heuristic than principled, following standard pre-norm practices rather than emerging from the underlying energy.
+        \end{itemize}
+    \item \textbf{Implementations}
+        \begin{itemize}[leftmargin=*]
+            \item \textbf{\textsc{Hyper-SET}}: a) applies alternating minimization that results in attention and feedforward modules \emph{sequentially}, reflecting the original Transformer structure; b) adopts adaptive, learnable step sizes conditioned on the input and iteration index~\Eqref{eq:12}, allowing the model to modulate its energy descent dynamically. 
+            \item \textbf{\textsc{ET}}: a) performs energy updates via auto-differentiation that results in a \emph{parallelized} fashion; b) uses fixed step sizes. 
+        \end{itemize}
+    \item \textbf{Empirical Verification}
+        \begin{itemize}[leftmargin=*]
+            \item \textbf{\textsc{Hyper-SET}}: a) confirms that the designed energy decreases in the forward pass in Figures~\ref{fig:energy} and~\ref{fig:rank angle};  b) supports generalizations beyond softmax attention (\eg, different energy functions leading to alternative attention schemes), as illustrated in Tables~\ref{tab:generalized attention} and~\ref{tab:generalized feedforward}.
+            \item \textbf{\textsc{ET}}: a) does not offer such explicit verification, leaving it unclear whether its dynamics faithfully track the energy descent objectives; b) Additionally, \textsc{Hyper-SET} achieves competitive performance with vanilla Transformers on tasks such as image classification and inference (\eg, Sudoku), whereas \textsc{ET} does not demonstrate comparable results in these domains.
+        \end{itemize}
+\end{itemize}
+
+\subsection{Practical Implications and Broader Impact}
+\label{section:implications and impact}
+% \todo{review}
+% original raw writing
+
+% we want to further highlight our motivation and contribution to make clear understandings
+% We aims at providing a more principled framework for understanding and designing sequence models, especially the Transformer family. There are efforts towards this direction \citep{hoover2024energy,yu2023white}. Yet, the implementation in \citep{yu2023white} slightly deviates from their formulations with an extra learnable output matrix (see Appendix B.1.1 in \citep{yu2023white}), which obscures its validity. In \citep{hoover2024energy}, the author motivates energy functions from the memory capacity viewpoint but lacks valid experiments such as associative retrieval and confirmation on whether their energy functions are indeed optimized.
+
+% In contrast, we provide a general formulation of token dynamics in a more mechanistic and describable way. We model the token dynamics to overcome synchronization on the low-dimensional space while promoting directional alignment to maintain the volume capacity in the original space, and we verify these describable behaviors. Hofield energy functions we adopt are just instantiation under this framework to describe this dynamical system and build connections to Transformers, and we can go beyond that; for example, we can design a new energy function based on kernel functions instead of $\operatorname{logsumexp}$ in Eq.(2) to derive new attention. We hope this interpretation could advance our understanding to further design more powerful models.
+ 
+% Prior works don't show superior performance on popular tasks over vanilla Transformer, such as image classification and logical inference, such as sudoku \citep{hoover2024energy,yu2023white}. In contrast, we rigorously adhere to the formulation without engineering tricks and show comparable (imagenet-100 classification, image modeling) and superior (cifar-10/100 classification, solving sudoku) performance to Transformer with parameter efficiency, which should be an advancement over these prior works.
+
+% % why \textsc{CRATE} is used as a good baseline, given all possible ViT models.
+% \textsc{CRATE} \citep{yu2023white} and its follow-up \citep{wu2025token} propose a white-box transformer with principled design, which attract some attention and are closely related to our pursued direction. While engineering-heavy ViTs have superior performance, we argue that such models are quite redundant (discussed in the introduction), and we believe principled design could be promising to tackle this issue. This work is a step towards this goal.
+
+% % how the proposed architecture is interpretable?
+% We view our model as a dynamical system and it's more interpretable in the sense that representation learning can be described by a meaningful function~\Eqref{eq:5}. It stems from the overcoming synchronization (Sec. 4.1.1) on low-dim space while promoting directional alignment to maintain volume capacity in the ambient space (Sec. 4.1.2)-an interpretable characterization of token dynamics in the forward pass.
+
+% % why one should particularly care about this regularizer, beyond "interpretability". There are no real performance benefits, as far as I can tell. A clear and convincing demonstration that this particular choice of first principle leads to tangible downstream improvements would increase the quality of this paper by a lot.
+% We believe the principles or the appropriate way to describe the representation dynamics in the forward pass are crucial to design neural networks. It is orthogonal and equally important to engineering efforts for the performance, which should be given sufficient attention. Our efforts try to contribute to this direction. Future works can further integrate other techniques to potentially improve the performance; for example, we could adopt momentum or advanced optimizers like Adam instead of gradient descent we used to optimize energy in the forward pass.
+
+% first version
+
+% This work presents a principled framework for understanding and designing sequence models by viewing Transformers as energy-based dynamical systems. Unlike prior efforts such as \textsc{CRATE}~\citep{yu2023white} or Energy Transformer~\citep{hoover2024energy}, which either deviate from their theoretical formulation or lack empirical confirmation of energy minimization, our model rigorously adheres to the theory and validates its behavior through measurable alignment and uniformity objectives. By explicitly modeling token dynamics to overcome synchronization in low-dimensional projections while preserving directional diversity in the ambient space, our approach offers an interpretable, first-principles foundation for representation learning. Though we use Hopfield energy as one instantiation, our framework is general and extensible—for instance, future work could adopt alternative energy functions (e.g., kernel-based) or introduce advanced optimization techniques within the forward pass. Our architecture achieves comparable or superior performance to vanilla Transformers on several tasks, including CIFAR-10/100 classification and Sudoku solving, without relying on engineering-heavy components. This demonstrates that theory-driven, interpretable design can lead to parameter-efficient and competitive models, paving the way for more robust and transparent neural architectures.
+
+% second version
+
+% We propose a principled framework for understanding and designing sequence models by modeling Transformer layers as steps in an energy-based dynamical system. In contrast to prior works such as Energy Transformer (\textsc{ET})\citep{hoover2024energy} and \textsc{CRATE}\citep{yu2023white}, our formulation rigorously defines energy functions directly over tokens with a hyperspherical constraint, rather than over normalized vectors or with added implementation heuristics. This allows for a clean theoretical interpretation grounded in constrained optimization and offers a more mechanistic view of how representations evolve through the network.
+
+% A core motivation of our model is to explicitly characterize and overcome token synchronization in low-dimensional projections while maintaining directional diversity in the original feature space—an interpretable objective with practical benefits. This is achieved via alternating energy minimization for attention and feedforward modules, using Hopfield energy as an instantiation. Our framework, however, is not limited to this choice; it can accommodate alternative formulations, such as kernel-based energy functions, to derive new attention mechanisms.
+
+% Our approach stands out by verifying its design goals: we empirically demonstrate consistent energy minimization and confirm desirable geometric behaviors such as alignment and uniformity. Prior works in this direction often lack such validation and fail to perform competitively on challenging benchmarks. In contrast, our model achieves comparable or superior performance to vanilla Transformers on tasks like CIFAR-10/100 classification, ImageNet-100, image modeling, and Sudoku solving—all with a one-layer parameter-efficient architecture and without relying on heavy architectural tricks.
+
+% Finally, we emphasize that principled, interpretable model design is a vital and complementary pursuit to empirical performance engineering. Our formulation offers a first-principles understanding of forward-pass dynamics in sequence models, opening up new avenues for integrating classical optimization insights into deep learning architectures. Future work can build upon this by incorporating advanced optimization techniques (e.g., momentum or adaptive step sizes like Adam) within the energy minimization steps to further enhance capability.
+
+% third version
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Why Study This Model}: This work proposes a principled approach to Transformer design by modeling representation learning as an energy minimization on the hyperspace. Unlike prior efforts such as Energy Transformer~\citep{hoover2024energy} and \textsc{CRATE}~\citep{yu2023white}, which either diverge from their theoretical formulations or lack generality to derive new architectures, our model directly formulates energy functions on tokens with improved rigorousness, while supporting a spectrum of alternative designs.
+
+    \item \textbf{Why \textsc{CRATE} Is a Fair Baseline}: \textsc{CRATE} \citep{yu2023white} also pursues transparency and principled design, which shares a similar spirit with our goal, making it an appropriate baseline. While engineering-heavy ViTs may excel in benchmarks, they often involve significant redundancy. We aim to advance more compact, describable, and empirically competitive model design for next-generation architectures.
+    
+    \item \textbf{Interpretability}: We view the forward pass of \textsc{Hyper-SET} as a dynamical system. It features greater interpretability than vanilla Transformer in the sense that this dynamics is more readily describable and characterized by a meaningful quantity-the energy function-and grounded in well-established principles as maximum likelihood estimation. Beyond being merely conceptual, this dynamics is quantitatively verifiable, providing an interpretable and testable framework for understanding representation evolution.
+    
+    \item \textbf{A General Principle Beyond Canonical Hopfield Energy}: The Hopfield energy we employ in the main paper serves as one instantiation under the proposed general principle. Our formulation allows for broader energy-based designs—such as kernel-based alternatives to $\operatorname{logsumexp}$—enabling principled generalizations beyond standard attention mechanisms.
+    
+    % \item \textbf{Why This Regularizer Matters}: Our model achieves strong empirical results across tasks (e.g., CIFAR-10/100, ImageNet-100, Sudoku) while adhering strictly to a theoretically sound design. This demonstrates that structured, interpretable models can be competitive with or outperform tuned Transformer variants—showing that principled architecture design is a promising research direction.
+    
+    % \item \textbf{Outlook and Future Directions}: 
+    % Our energy-based formulation can be extended with advanced optimization methods (e.g., momentum, Adam) in the forward pass. This lays a foundation for future models that combine interpretability, theoretical rigor, and empirical strength in a unified design paradigm. Further improvements may integrate sparse \citep{tan-etal-2023-sparse} or mixture-of-experts \citep{csordas2024moeut} techniques.
+\end{itemize}
+\subsection{Limitations}
+While \textsc{Hyper-SET} offers a principled and empirically competitive formulation for Transformer design, it also comes with several limitations that highlight directions for future work:
+
+\begin{itemize}[leftmargin=*]
+    \item First, the choice of subspace in our conceptualization is less explored. The choice of uniform prior on the hypersphere in assumption~\ref{assumption:2} could be too strong in practice. Overly enforcing uniformity may be restrictive in some tasks. Moreover, the number of subspaces $H$ and its dimension $p$ are chosen heuristically. Their relationship, if any, with the real data distribution remains unclear.
+    \item Second, the modulation network to learn step sizes introduces complexity. Although we use a modulation network to learn step sizes adaptively, tuning the configurations of this network still requires considerable effort. In addition, it introduces more computational complexity despite that the overall architecture is more parameter-efficient.
+
+    % We acknowledge this extra computational cost as one of our limitation in Appendix H.3, largely due to the modulation network that learns the step sizes (~2.33ms) which is adopted only for performance reasons rather than being a theoretically necessary component in our framework. It comes inevitably with some expenses to match Transformer with "white-box" design: more parameters (CRATE [1]) or more runtime cost (ours). In fact, we have provided ablations that remove this extra network and fix the step sizes, which gives similar runtime (5.70ms in Table 17), but the performance decreases greatly (81.45 on CIFAR-10 and 51.29 on CIFAR-100 in Table 4). So, we believe there is still room for improvement in optimizing the step sizes schedule and further enhancing this minimalist implementation in future work.
+    \item Third, our experiments on scalability are still preliminary. We confirm competitive and superior performance on less than 20 million parameters and prove depth-wise LoRA scaling effectiveness. However, extensions to truly large-scale settings—\eg, billion-level—have yet to be demonstrated. 
+\end{itemize} 
+
+\subsection{Future Directions}
+We provide several promising future directions:
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Autoregressive Modeling}: \textsc{Hyper-SET} currently lacks a causal structure, limiting its use in autoregressive sequence modeling. Adapting to GPT-style models with causal masking is an important future step.
+    \item \textbf{Flow Matching and ODE Connections}: The iterative updates in \textsc{Hyper-SET} resemble neural ODEs, suggesting potential connections to flow matching techniques that may unify Transformer-based models with generative modeling.
+    \item \textbf{Scalability and Adaptive Computation}: Our initial results with depth-wise LoRA are promising but preliminary. Future work could explore dynamic iteration depth, inspired by latent space reasoning \citep{geiping2025scaling}, sparsity \citep{tan-etal-2023-sparse}, and mixture-of-experts \citep{csordas2024moeut}.
+\end{enumerate}
