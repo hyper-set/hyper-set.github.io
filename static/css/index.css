@@ -185,6 +185,18 @@ body {
   text-align: left;
 }
 
+.core-question-box {
+  background: #f2f4f7;
+  border: 2px solid #0a0c0f;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin: 0.75rem 0 1rem;
+}
+
+/* .core-question-box strong {
+  display: block;
+} */
+
 /* Section styling */
 .section h3.title {
   margin-top: 1rem;
@@ -263,6 +275,18 @@ input,
 select,
 textarea {
   font-family: var(--font-main);
+}
+
+.textsc-term {
+  font-variant-caps: small-caps;
+  font-feature-settings: "smcp" 1, "c2sc" 1;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.textsc-term .textsc-hyphen {
+  letter-spacing: 0;
+  margin: 0 0.02em;
 }
 
 .section {
@@ -547,6 +571,35 @@ textarea {
 .figure-caption {
   margin-top: 0.2rem;
   color: #52606d;
+}
+
+.cifar-tradeoff-figure {
+  margin: 1rem 0 0.3rem !important;
+}
+
+.cifar-tradeoff-caption {
+  margin-top: 0 !important;
+  margin-bottom: 0.9rem !important;
+}
+
+.cifar-tradeoff-table {
+  margin-top: 1.6rem !important;
+}
+
+.rank-angle-grid {
+  width: min(1100px, calc(100vw - 2rem));
+  max-width: none;
+  margin-left: 50% !important;
+  transform: translateX(-50%);
+}
+
+
+.rank-angle-figure img {
+  width: 92%;
+}
+
+.rank-angle-caption {
+  margin-top: 0 !important;
 }
 
 .table-scroll {
