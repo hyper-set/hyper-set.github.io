@@ -680,9 +680,77 @@ textarea {
     padding-bottom: 2rem;
   }
 
+  .publication-title {
+    font-size: 1.95rem !important;
+    line-height: 1.2;
+  }
+
+  .publication-authors {
+    font-size: 1rem !important;
+    line-height: 1.55;
+  }
+
+  .author-block {
+    display: inline;
+  }
+
+  .content.has-text-justified,
+  .core-question-box.has-text-justified {
+    text-align: left !important;
+  }
+
+  .content p,
+  .content li {
+    line-height: 1.7;
+  }
+
+  .publication-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.55rem;
+  }
+
+  .publication-links .link-block {
+    flex: 1 1 calc(50% - 0.55rem);
+    min-width: 140px;
+  }
+
+  .publication-links .button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .equation-container {
+    padding: 0.15rem 0.1rem;
+  }
+
+  .equation-container mjx-container {
+    font-size: 90% !important;
+  }
+
+  .table-scroll {
+    -webkit-overflow-scrolling: touch;
+  }
+
   .minimal-note-grid,
   .theory-evidence-grid {
     grid-template-columns: 1fr;
+  }
+
+  .rank-angle-grid {
+    width: 100%;
+    margin-left: 0 !important;
+    transform: none;
+  }
+
+  .rank-angle-column {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .rank-angle-figure img {
+    width: 100%;
   }
 
   .story-hook-question {
@@ -695,5 +763,6 @@ textarea {
 
   .results-table {
     font-size: 0.84rem;
+    min-width: 700px;
   }
 }
