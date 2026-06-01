@@ -1,34 +1,91 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta name="google-site-verification" content="V4cU9wbqbNFUps8caTQxHOhph8XDicJPEsuasFzDd3I" />
   <meta charset="utf-8">
   <meta name="description"
-        content="Hyper-SET: Designing Transformers via Hyperspherical Energy Minimization - ICLR 2026">
-  <meta name="keywords" content="Transformer, Energy-Based Learning, Hyperspherical, Interpretability">
+        content="A principled, top-down Transformer design framework grounded in
+        energy-based interpretation: symmetric attention,
+        feedforward, and RMS normalization all emerge from
+        iterative constrained energy minimization on the
+        hypersphere, yielding a compact recurrent-depth model
+        competitive across reasoning, classification, and masked
+        modeling tasks.">
+  <meta name="keywords" content="Transformer, Energy-Based Learning, Hyperspherical Geometry, Intrinsic Interpretability">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="application-name" content="Hyper-SET">
   <title>Hyper-SET: Designing Transformers via Hyperspherical Energy Minimization</title>
+  <link rel="canonical" href="https://hyper-set.github.io/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Hyper-SET">
+  <meta property="og:title" content="Hyper-SET: Designing Transformers via Hyperspherical Energy Minimization">
+  <meta property="og:description"
+        content="A principled, top-down Transformer design framework grounded in
+        energy-based interpretation: symmetric attention,
+        feedforward, and RMS normalization all emerge from
+        iterative constrained energy minimization on the
+        hypersphere, yielding a compact recurrent-depth model
+        competitive across reasoning, classification, and masked
+        modeling tasks.">
+  <meta property="og:url" content="https://hyper-set.github.io/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Hyper-SET: Designing Transformers via Hyperspherical Energy Minimization">
+  <meta name="twitter:description"
+        content="A principled, top-down Transformer design framework grounded in
+        energy-based interpretation: symmetric attention,
+        feedforward, and RMS normalization all emerge from
+        iterative constrained energy minimization on the
+        hypersphere, yielding a compact recurrent-depth model
+        competitive across reasoning, classification, and masked
+        modeling tasks.">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://hyper-set.github.io/#website",
+        "url": "https://hyper-set.github.io/",
+        "name": "Hyper-SET",
+        "description": "A principled, top-down Transformer design framework grounded in
+        energy-based interpretation: symmetric attention,
+        feedforward, and RMS normalization all emerge from
+        iterative constrained energy minimization on the
+        hypersphere, yielding a compact recurrent-depth model
+        competitive across reasoning, classification, and masked
+        modeling tasks."
+      },
+      {
+        "@type": "ScholarlyArticle",
+        "@id": "https://hyper-set.github.io/#article",
+        "url": "https://hyper-set.github.io/",
+        "name": "Hyper-SET: Designing Transformers via Hyperspherical Energy Minimization",
+        "headline": "Hyper-SET: Designing Transformers via Hyperspherical Energy Minimization",
+        "description": "We present Hyper-Spherical Energy Transformer (Hyper-SET), a recurrent-depth alternative to vanilla Transformers from iterative energy optimization on the hypersphere.",
+        "author": [
+          { "@type": "Person", "name": "Yunzhe Hu" },
+          { "@type": "Person", "name": "Difan Zou" },
+          { "@type": "Person", "name": "Dong Xu" }
+        ],
+        "isPartOf": { "@id": "https://hyper-set.github.io/#website" }
+      }
+    ]
+  }
+  </script>
+
   <link rel="icon" href="data:,">
 
-  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro&display=swap"
         rel="stylesheet">
 
   <link rel="stylesheet" href="./static/css/bulma.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
   <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <link rel="stylesheet" href="./static/css/index.css">
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script defer src="./static/js/fontawesome.all.min.js"></script>
-  <script src="./static/js/bulma-carousel.min.js"></script>
-  <script src="./static/js/bulma-slider.min.js"></script>
-  <script src="./static/js/index.js"></script>
-  
-  <!-- MathJax for rendering equations -->
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body id="top">
 
@@ -81,9 +138,9 @@
             <span class="author-block"><sup>2</sup>Shenzhen Loop Area Institute</span>
           </div>
           
-          <!-- <div class="publication-venue">
-            ICLR 2026
-          </div> -->
+          <div class="is-size-5 publication-authors" style="margin-top: 0.9rem;">
+            <span class="author-block">ICLR 2026</span>
+          </div>
 
           <div class="column has-text-centered">
             <div class="publication-links">
@@ -139,9 +196,9 @@
               </span>
             </div>
 
-            <div class="is-size-5 publication-authors" style="margin-top: 0.9rem;">
+            <!-- <div class="is-size-5 publication-authors" style="margin-top: 0.9rem;">
               <span class="author-block">ICLR 2026</span>
-            </div>
+            </div> -->
 
           </div>
         </div>
@@ -157,7 +214,7 @@
       <div class="columns is-centered">
         <div class="column has-text-centered">
           <figure class="image">
-            <img src="./static/figures/figure1_iclr2026_Page1.png" alt="Overview of Hyper-SET" style="max-width: 1000px; margin: 0 auto;">
+            <img src="./static/figures/figure1_iclr2026_Page1.png" alt="Overview of Hyper-SET" style="max-width: 1000px; margin: 0 auto;" fetchpriority="high" decoding="async">
           </figure>
             <h2 class="subtitle has-text-centered teaser-caption">
             <strong>Hyperspherical Energy Transformer (<span class="textsc-term">Hyper-SET</span>)</strong>: Core components, including self-attention, feedforward and normalization, all naturally emerge from iterative energy minimization on the hypersphere.
@@ -173,7 +230,7 @@
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">What is new in this work</h2>
+        <h2 class="title is-3">What's new in this work</h2>
         <div class="core-question-box has-text-justified">
           <p>
             <strong>TL;DR</strong>: <span class="textsc-term">Hyper-SET</span> introduces a top-down approach to design Transformer layers from a single optimization objective, rather than stacking heuristics first and interpreting post hoc. It bridges the gap and reveals a delicate connection between energy-based learning and practical Transformer design, and provides a general design principle beyond a single model that unlocks novel variants.
@@ -289,7 +346,7 @@
           </p>
           
           <figure class="image" style="margin: 2rem 0;">
-            <img src="./static/figures/overviewofHyperSET_v1_Page1.png" alt="Overview of Hyper-SET Architecture">
+            <img src="./static/figures/overviewofHyperSET_v1_Page1.png" alt="Overview of Hyper-SET Architecture" loading="lazy" decoding="async">
           </figure>
           
           <h5 class="title is-6">Attention Module (from Uniform Energy)</h5>
@@ -344,10 +401,10 @@
             Both attention and feedforward energies decrease during optimization, consistent with the intended objective. Without hard constraints on step-size sign, the trend persists across training iterations and remains stable beyond the training depth.
           </p>
           <figure class="image" style="margin: 1.5rem 0;">
-            <img src="./static/figures/energy_sudoku_with_acc_Page1.png" alt="Energy trajectories on Sudoku">
+            <img src="./static/figures/energy_sudoku_with_acc_Page1.png" alt="Energy trajectories on Sudoku" loading="lazy" decoding="async">
           </figure>
           <figure class="image" style="margin: 1.5rem 0;">
-            <img src="./static/figures/energy_with_acc_Page1.png" alt="Energy trajectories on CIFAR-10">
+            <img src="./static/figures/energy_with_acc_Page1.png" alt="Energy trajectories on CIFAR-10" loading="lazy" decoding="async">
           </figure>
           <p class="has-text-centered is-size-8 figure-caption">Energy evolution on Sudoku (top) and CIFAR-10 (bottom) validation sets.</p>
         </div>
@@ -364,13 +421,13 @@
           <div class="columns is-mobile is-variable is-2 is-centered rank-angle-grid" style="margin: 1.5rem 0;">
             <div class="column is-half rank-angle-column">
               <figure class="image rank-angle-figure">
-                <img src="./static/figures/rank_angle_sudoku_Page1.png" alt="Rank and angle on Sudoku">
+                <img src="./static/figures/rank_angle_sudoku_Page1.png" alt="Rank and angle on Sudoku" loading="lazy" decoding="async">
               </figure>
               <p class="has-text-centered is-size-8 figure-caption rank-angle-caption">Geometric analysis on Sudoku test set.</p>
             </div>
             <div class="column is-half rank-angle-column">
               <figure class="image rank-angle-figure">
-                <img src="./static/figures/rank_angle-v2_Page1.png" alt="Rank and angle on CIFAR-10">
+                <img src="./static/figures/rank_angle-v2_Page1.png" alt="Rank and angle on CIFAR-10" loading="lazy" decoding="async">
               </figure>
               <p class="has-text-centered is-size-8 figure-caption rank-angle-caption">Geometric analysis on CIFAR-10 validation set.</p>
             </div>
@@ -407,13 +464,13 @@
           <div class="columns is-mobile is-variable is-2 is-centered" style="margin: 1.5rem 0;">
             <div class="column is-half">
               <figure class="image">
-                <img src="./static/figures/sudoku_training_dynamics_Page1.png" alt="Sudoku Training Dynamics">
+                <img src="./static/figures/sudoku_training_dynamics_Page1.png" alt="Sudoku Training Dynamics" loading="lazy" decoding="async">
               </figure>
               <p class="has-text-centered is-size-8 figure-caption">Training dynamics on Sudoku.</p>
             </div>
             <div class="column is-half">
               <figure class="image">
-                <img src="./static/figures/sudoku_extropolation_Page1.png" alt="Sudoku Test-time Extrapolation">
+                <img src="./static/figures/sudoku_extropolation_Page1.png" alt="Sudoku Test-time Extrapolation" loading="lazy" decoding="async">
               </figure>
               <p class="has-text-centered is-size-8 figure-caption">Test-time extrapolation on Sudoku.</p>
             </div>
@@ -428,7 +485,7 @@
           </p>
           
           <figure class="image cifar-tradeoff-figure">
-            <img src="./static/figures/bar_plot_with_upper_bound_Page1.png" alt="Layer-iteration trade-off on CIFAR-100">
+            <img src="./static/figures/bar_plot_with_upper_bound_Page1.png" alt="Layer-iteration trade-off on CIFAR-100" loading="lazy" decoding="async">
           </figure>
           <p class="has-text-centered is-size-7 figure-caption cifar-tradeoff-caption">Top-1 accuracy and model parameters on CIFAR-100 with different layer-iteration trade-offs. Hyper-SET consistently surpasses Transformer with parameter efficiency.</p>
 
@@ -488,7 +545,7 @@
             Masked image modeling offers a generative-style setting where representation quality matters in a different way. Hyper-SET performs competitively here as well, further indicating that the framework is broad enough to support both discriminative and generative learning scenarios.
           </p>
           <figure class="image" style="margin: 1.5rem 0;">
-            <img src="./static/figures/visualization_more_results_v3_Page1.png" alt="Masked Image Modeling Results">
+            <img src="./static/figures/visualization_more_results_v3_Page1.png" alt="Masked Image Modeling Results" loading="lazy" decoding="async">
           </figure>
           <p class="has-text-centered is-size-7 figure-caption">Visualization of masked image modeling results on ImageNet-100.</p>
 
@@ -656,7 +713,7 @@
         <p class="table-note">ImageNet-100 accuracy (%) of Hyper-SET under different LoRA ranks \(r\). Depth-wise LoRA introduces representation flexibility at each iteration.</p>
 
         <div class="content has-text-justified" style="margin-top: 4em;">
-          <h2 class="title is-3 has-text-centered">What is next?</h2>
+          <h2 class="title is-3 has-text-centered">What's next?</h2>
           <p>
             Looking forward, we see several promising directions for future work:
             <ul>
@@ -709,6 +766,18 @@ ODEs. Exploring potential connections to flow matching could yield new training 
     </div>
   </div>
 </footer>
+
+<script defer src="./static/js/index.js"></script>
+<script>
+  window.MathJax = {
+    tex: {
+      inlineMath: [['\\(', '\\)']],
+      displayMath: [['$$', '$$']]
+    },
+    options: { renderActions: { addMenu: [] } }
+  };
+</script>
+<script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 </body>
 </html>
